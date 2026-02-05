@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import Editor from '@monaco-editor/react';
 import { Button } from '@/components/ui/button';
-import { Plus, Save, FileText, GitBranch, Zap } from 'lucide-react';
+import { Plus, Save, FileText, GitBranch, Zap, Sparkles } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { getFile, saveFile } from '@/lib/storage';
 import { useBKNStore } from '@/lib/store';
+import { AIGenerateDialog } from '@/components/AIGenerate/AIGenerateDialog';
 import type { editor } from 'monaco-editor';
 
 const ENTITY_TEMPLATE = `## Entity: new_entity
@@ -111,6 +112,7 @@ interface EditorProps {
 export function BKEditor({ onContentChange }: EditorProps) {
   const [content, setContent] = useState('');
   const [saved, setSaved] = useState(true);
+  const [aiDialogOpen, setAiDialogOpen] = useState(false);
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const { openFile, refreshFiles } = useBKNStore();
@@ -196,6 +198,10 @@ export function BKEditor({ onContentChange }: EditorProps) {
     }
   };
 
+  const handleApplyGeneratedContent = (generatedContent: string) => {
+    insertTemplate(generatedContent);
+  };
+
   return (
     <div className="flex flex-col h-full">
       {/* Toolbar */}
@@ -223,6 +229,15 @@ export function BKEditor({ onContentChange }: EditorProps) {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => setAiDialogOpen(true)}
+            aria-label="AI 生成"
+          >
+            <Sparkles className="h-4 w-4 mr-2" />
+            生成
+          </Button>
         </div>
         <div className="flex items-center gap-2">
           {openFile && (
@@ -268,6 +283,13 @@ export function BKEditor({ onContentChange }: EditorProps) {
           </div>
         )}
       </div>
+
+      {/* AI Generate Dialog */}
+      <AIGenerateDialog
+        open={aiDialogOpen}
+        onOpenChange={setAiDialogOpen}
+        onApply={handleApplyGeneratedContent}
+      />
     </div>
   );
 }
