@@ -1,0 +1,45 @@
+---
+type: entity
+id: service
+name: Service服务
+version: 1.0.0
+network: k8s-modular
+tags: [拓扑架构, 网络, Kubernetes]
+---
+
+# Service服务
+
+Kubernetes 服务抽象层，提供稳定的访问入口。
+
+## 数据来源
+
+| 类型 | ID | 名称 |
+|------|-----|------|
+| data_view | d2mio43q6gt6p380dith | service_info_view |
+
+> **主键**: `id` | **显示属性**: `service_name`
+
+## 数据属性
+
+| 属性名 | 显示名 | 类型 | 说明 | 主键 | 索引 |
+|--------|--------|------|------|:----:|:----:|
+| id | ID | int64 | 主键ID | YES | YES |
+| service_name | Service名称 | VARCHAR | Service名称 | | YES |
+| service_namespace | 命名空间 | VARCHAR | Service所属命名空间 | | YES |
+| service_type | Service类型 | VARCHAR | Service类型 (ClusterIP/NodePort/LoadBalancer) | | |
+| service_cluster_ip | Cluster IP | VARCHAR | Cluster IP地址 | | |
+| service_ports | 端口映射 | VARCHAR | 服务端口映射 | | |
+| service_selector | Pod选择器 | VARCHAR | Pod选择器标签 | | |
+| service_created_at | 创建时间 | TIMESTAMP | Service创建时间 | | |
+
+## 业务语义
+
+Service 为一组 Pod 提供统一的访问入口和负载均衡。
+
+### 服务类型
+
+| 类型 | 说明 |
+|------|------|
+| ClusterIP | 集群内部访问 |
+| NodePort | 节点端口暴露 |
+| LoadBalancer | 外部负载均衡 |
